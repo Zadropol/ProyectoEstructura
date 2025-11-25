@@ -9,7 +9,6 @@ int main() {
     srand(time(NULL));
     Grafo<string> g;
 
-    cout << "=== CORTE MINIMO BASICO ===" << endl;
 
     g.leerArchivo("Min_Cut_NOMBRES Prueba.txt");
 

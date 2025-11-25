@@ -94,8 +94,6 @@ inline void Grafo<T>::ContraerArista(T v1, T v2)
 template<class T>
 inline int Grafo<T>::MinCut()
 {
-    cout << "\n--- INICIANDO CORTE MINIMO ---" << endl;
-
     while (graf.size() > 2) {
         T v1, v2;
         azar(v1, v2);
