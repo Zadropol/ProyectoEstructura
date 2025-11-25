@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <fstream>
+#include <sstream>
 #include <cstdlib>
 #include <ctime>
 
@@ -14,85 +16,94 @@ private:
     vector<T> vertices;
 
 public:
-    // Insertar arista
-    void InsertarArista(T a, T b) {
-        graf[a].push_back(b);
-        graf[b].push_back(a);
+    void leerArchivo(string nombreArchivo);
+    void azar(T& v1, T& v2);
+    void ContraerArista(T v1, T v2);
+    int MinCut();
+};
+
+template<class T>
+inline void Grafo<T>::leerArchivo(string nombreArchivo)
+{
+    cout << "Leyendo archivo: " << nombreArchivo << endl;
+
+    ifstream archivo(nombreArchivo);
+    if (!archivo) {
+        cout << "Error: No se pudo abrir el archivo" << endl;
+        return;
     }
 
-    // LEER ARCHIVO SIMPLIFICADO
-    void leerArchivo() {
-        cout << "Leyendo archivo..." << endl;
+    string linea;
+    while (getline(archivo, linea)) {
+        stringstream ss(linea);
+        string origen, destino;
 
-        // Datos fijos de tu archivo
-        InsertarArista("LP", "CBBA");
-        InsertarArista("LP", "TARIJA");
-        InsertarArista("CBBA", "TARIJA");
-        InsertarArista("CBBA", "ORURO");
-        InsertarArista("ORURO", "PANDO");
+        ss >> origen;
 
-        // Llenar vertices
-        for (auto& par : graf) {
-            vertices.push_back(par.first);
+        while (ss >> destino && destino != "-1") {
+            graf[origen].push_back(destino);
+            graf[destino].push_back(origen);
+            cout << "Arista: " << origen << " - " << destino << endl;
         }
+    }
+    archivo.close();
 
-        cout << "Grafo listo! Nodos: ";
-        for (auto v : vertices) cout << v << " ";
-        cout << endl;
+    for (auto& par : graf) {
+        vertices.push_back(par.first);
     }
 
-    // FUNCIÓN AZAR - SUPER SIMPLE
-    void azar(T& v1, T& v2) {
-        // Elegir nodo aleatorio
-        int i1 = rand() % vertices.size();
-        v1 = vertices[i1];
+    cout << "Archivo leido! Nodos: ";
+    for (auto v : vertices) cout << v << " ";
+    cout << endl;
+}
 
-        // Elegir vecino aleatorio
-        int i2 = rand() % graf[v1].size();
-        v2 = graf[v1][i2];
+template<class T>
+inline void Grafo<T>::azar(T& v1, T& v2)
+{
 
-        cout << "Azar eligio: " << v1 << " - " << v2 << endl;
-    }
+    int i1 = rand() % vertices.size();
+    v1 = vertices[i1];
 
-    // CONTRAER ARISTA - SIMPLIFICADO
-    void ContraerArista(T v1, T v2) {
-        cout << "Contrayendo " << v1 << " y " << v2 << endl;
+    int i2 = rand() % graf[v1].size();
+    v2 = graf[v1][i2];
 
-        // Mover todas las conexiones de v2 a v1
-        for (auto vecino : graf[v2]) {
-            if (vecino != v1) {
-                graf[v1].push_back(vecino);
-                // Actualizar el vecino para que apunte a v1
-                for (auto& v : graf[vecino]) {
-                    if (v == v2) v = v1;
-                }
+    cout << "Azar eligio: " << v1 << " - " << v2 << endl;
+}
+
+template<class T>
+inline void Grafo<T>::ContraerArista(T v1, T v2)
+{
+    cout << "Contrayendo " << v1 << " y " << v2 << endl;
+
+    for (auto vecino : graf[v2]) {
+        if (vecino != v1) {
+            graf[v1].push_back(vecino);
+            for (auto& v : graf[vecino]) {
+                if (v == v2) v = v1;
             }
         }
-
-        // Eliminar v2
-        graf.erase(v2);
-        // Actualizar lista de vertices
-        vertices.clear();
-        for (auto& par : graf) {
-            vertices.push_back(par.first);
-        }
     }
 
-    // CORTE MÍNIMO - VERSIÓN BÁSICA
-    int MinCut() {
-        cout << "\n--- INICIANDO CORTE MINIMO ---" << endl;
-
-        while (graf.size() > 2) {
-            T v1, v2;
-            azar(v1, v2);
-            ContraerArista(v1, v2);
-
-            cout << "Nodos restantes: " << graf.size() << endl;
-        }
-
-        // El corte son las aristas del primer nodo
-        int corte = graf.begin()->second.size();
-        cout << "CORTE MINIMO = " << corte << endl;
-        return corte;
+    graf.erase(v2);
+    vertices.clear();
+    for (auto& par : graf) {
+        vertices.push_back(par.first);
     }
-};
+}
+
+template<class T>
+inline int Grafo<T>::MinCut()
+{
+    cout << "\n--- INICIANDO CORTE MINIMO ---" << endl;
+
+    while (graf.size() > 2) {
+        T v1, v2;
+        azar(v1, v2);
+        ContraerArista(v1, v2);
+        cout << "Nodos restantes: " << graf.size() << endl;
+    }
+
+    int corte = graf.begin()->second.size();
+    cout << "CORTE MINIMO = " << corte << endl;
+    return corte;
+}

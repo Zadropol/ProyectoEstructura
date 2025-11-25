@@ -11,19 +11,16 @@ int main() {
 
     cout << "=== CORTE MINIMO BASICO ===" << endl;
 
-    // 1. Cargar datos
-    g.leerArchivo();
+    g.leerArchivo("Min_Cut_NOMBRES Prueba.txt");
 
-    // 2. Ejecutar azar una vez para demostrar
     cout << "\n1. PRUEBA DE AZAR:" << endl;
     string a, b;
     g.azar(a, b);
 
-    // 3. Ejecutar corte mínimo completo
-    cout << "\n2. EJECUTANDO CORTE MINIMO:" << endl;
+    cout << "\n2. EJECUTANDO CORTE MINIMO COMPLETO:" << endl;
     int resultado = g.MinCut();
 
-    cout << "\n3. RESULTADO: " << resultado << endl;
+    cout << "\n3. RESULTADO FINAL: " << resultado << endl;
 
     return 0;
 }
