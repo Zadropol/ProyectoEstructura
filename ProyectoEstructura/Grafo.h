@@ -20,6 +20,7 @@ public:
     void azar(T& v1, T& v2);
     void ContraerArista(T v1, T v2);
     int MinCut();
+    vector<T> getVertices();
 };
 
 template<class T>
@@ -73,23 +74,27 @@ inline void Grafo<T>::azar(T& v1, T& v2)
 template<class T>
 inline void Grafo<T>::ContraerArista(T v1, T v2)
 {
-    cout << "Contrayendo " << v1 << " y " << v2 << endl;
-
     for (auto vecino : graf[v2]) {
-        if (vecino != v1) {
-            graf[v1].push_back(vecino);
-            for (auto& v : graf[vecino]) {
-                if (v == v2) v = v1;
-            }
+        if (vecino == v1) continue;
+        graf[v1].push_back(vecino);
+
+        for (auto& x : graf[vecino]) {
+            if (x == v2) x = v1;
         }
     }
+        graf.erase(v2);
+		auto& lista = graf[v1];
+        lista.erase(remove(lista.begin(), lista.end(), v1), lista.end());
 
-    graf.erase(v2);
-    vertices.clear();
-    for (auto& par : graf) {
-        vertices.push_back(par.first);
-    }
+        // Actualizar vertices
+        vertices.clear();
+        for (auto& par : graf)
+            vertices.push_back(par.first);
+        
+    
 }
+
+
 
 template<class T>
 inline int Grafo<T>::MinCut()
@@ -105,3 +110,11 @@ inline int Grafo<T>::MinCut()
     cout << "CORTE MINIMO = " << corte << endl;
     return corte;
 }
+
+template<class T>
+inline vector<T> Grafo<T>::getVertices()
+{
+	return vertices;
+}
+
+

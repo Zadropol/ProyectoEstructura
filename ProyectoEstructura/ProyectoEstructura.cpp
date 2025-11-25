@@ -12,14 +12,17 @@ int main() {
 
     g.leerArchivo("Min_Cut_NOMBRES Prueba.txt");
 
-    cout << "\n1. PRUEBA DE AZAR:" << endl;
-    string a, b;
-    g.azar(a, b);
+    int aux = 100;
+	int tam = g.getVertices().size();
+    for (int i = 0; i <tam; i++)
+    {
+        Grafo<string> copia = g;        // copia del grafo original
+        int corte = copia.MinCut();     // ejecuta Karger
+        cout << "Ejecución " << i + 1 << " corte = " << corte << endl;
+        if (corte < aux) aux = corte;
+    }
 
-    cout << "\n2. EJECUTANDO CORTE MINIMO COMPLETO:" << endl;
-    int resultado = g.MinCut();
-
-    cout << "\n3. RESULTADO FINAL: " << resultado << endl;
+    cout << "Nuevo corte minimo encontrado: " << aux << endl;
 
     return 0;
 }
